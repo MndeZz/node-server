@@ -26,25 +26,39 @@ function añadirTarea(){
     console.log(objeto);
   };
 };
-// creacion de la funcion para eliminar una tarea de la lista
-function eliminarTarea(){
-  let indice = inputPrompt("Ingrese el indice de la tarea a eliminar: ");
+// creacion de la funcion para eliminar una tarea de la lista usando una promesa de tiempo
+function eliminar(){
+  return new Promise ((resolve, reject) => {
+    let indice = inputPrompt("Ingrese el indice de la tarea a eliminar: ");
+    lista.splice(indice, 1);
 
-  lista.splice(indice, 1);
-    for (var objeto of lista) {
-        console.log(objeto);
-    };
-};
+      if (lista.length === 0){
+        reject(new Error("los datos no estan"))
+      }
+      setTimeout(() =>{
+        resolve(lista);
+      }, 2000)
+  })
+}
 // creacion de la funcion para completar una tarea de la lista
-function completarTarea(){
-  let indiceCompletar = inputPrompt("Ingrese el indice de la tarea a completar: ");
-  let indice_Completar = lista[indiceCompletar];
+function completar_tarea(){
+  return new Promise ((resolve, reject) => {
+    let indiceCompletar = inputPrompt("Ingrese el indice de la tarea a completar: ");
+    let indice_Completar = lista[indiceCompletar];
+    indice_Completar.estado = "completo"
 
-  indice_Completar.estado = "completo"
+      if (lista.length === 0){
+        reject(new Error("los datos no estan"))
+      }
+      setTimeout(() =>{
+        resolve(lista);
+      }, 2000)
+  })
+}
 
-  for (var objeto of lista) {
-    console.log(objeto);
-  };
+async function fetchingData(){
+  const datos = await completar_tarea();
+  console.log(datos);
 };
 
 console.log("¿que desea hacer?");
@@ -56,13 +70,15 @@ let opcion = inputPrompt("Ingrese el numero de la opcion: ");
 
 switch (opcion) {
     case "1":
-        eliminarTarea()
+        eliminar()
+        .then((Response) => console.log(Response))
+        .catch((err) => console.log(err.message))
       break;
     case "2":
         añadirTarea()
       break;
     case "3":
-        completarTarea()
+        fetchingData()
       break;
     default:
       console.log("Opción no válida");
